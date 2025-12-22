@@ -17,15 +17,16 @@ pipeline {
         }
 
         stage('Run Containers (Test)') {
-    steps {
-        sh '''
-        docker-compose up -d
-        sleep 15
-        docker-compose ps
-        '''
-    }
-}
-       stage('Push Images to Docker Hub') {
+            steps {
+                sh '''
+                docker-compose up -d
+                sleep 15
+                docker-compose ps
+                '''
+            }
+        }
+
+        stage('Push Images to Docker Hub') {
             steps {
                 withCredentials([usernamePassword(
                     credentialsId: 'dockerhub-creds',
@@ -34,16 +35,21 @@ pipeline {
                 )]) {
                     sh '''
                     echo "$DOCKER_TOKEN" | docker login -u "$DOCKER_USER" --password-stdin
-                    docker compose push
+
+                    docker tag react-flask-mongo-pipeline-backend:latest $DOCKER_USER/react-flask-mongo-backend:latest
+                    docker tag react-flask-mongo-pipeline-frontend:latest $DOCKER_USER/react-flask-mongo-frontend:latest
+
+                    docker push $DOCKER_USER/react-flask-mongo-backend:latest
+                    docker push $DOCKER_USER/react-flask-mongo-frontend:latest
                     '''
                 }
             }
         }
-
     }
-post {
+
+    post {
         always {
-            sh 'docker compose down || true'
+            sh 'docker-compose down || true'
         }
     }
 }
