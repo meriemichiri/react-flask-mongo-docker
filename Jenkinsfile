@@ -36,11 +36,8 @@ pipeline {
                     sh '''
                     echo "$DOCKER_TOKEN" | docker login -u "$DOCKER_USER" --password-stdin
 
-                    docker tag react-flask-mongo-pipeline-backend:latest $DOCKER_USER/react-flask-mongo-backend:latest
-                    docker tag react-flask-mongo-pipeline-frontend:latest $DOCKER_USER/react-flask-mongo-frontend:latest
-
-                    docker push $DOCKER_USER/react-flask-mongo-backend:latest
-                    docker push $DOCKER_USER/react-flask-mongo-frontend:latest
+                    docker push $DOCKER_USER/react-flask-mongo-pipeline-backend:latest
+                    docker push $DOCKER_USER/react-flask-mongo-pipeline-frontend:latest
                     '''
                 }
             }
