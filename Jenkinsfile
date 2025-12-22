@@ -16,11 +16,16 @@ pipeline {
             }
         }
 
-        stage('Run Containers') {
-            steps {
-                sh 'docker-compose up -d'
-            }
-        }
+        stage('Run Containers (Test)') {
+    steps {
+        sh '''
+        docker-compose up -d
+        sleep 15
+        docker-compose ps
+        '''
+    }
+}
+
     }
 }
 
