@@ -27,21 +27,22 @@ pipeline {
         }
 
         stage('Push Images to Docker Hub') {
-            steps {
-                withCredentials([usernamePassword(
-                    credentialsId: 'dockerhub-creds',
-                    usernameVariable: 'DOCKER_USER',
-                    passwordVariable: 'DOCKER_TOKEN'
-                )]) {
-                    sh '''
-                    echo "$DOCKER_TOKEN" | docker login -u "$DOCKER_USER" --password-stdin
-
-                    docker push $DOCKER_USER/react-flask-mongo-pipeline-backend:latest
-                    docker push $DOCKER_USER/react-flask-mongo-pipeline-frontend:latest
-                    '''
-                }
-            }
+    steps {
+        withCredentials([usernamePassword(
+            credentialsId: 'dockerhub-creds',
+            usernameVariable: 'DOCKER_USER',
+            passwordVariable: 'DOCKER_TOKEN'
+        )]) {
+            sh '''
+            echo "$DOCKER_TOKEN" | docker login -u "$DOCKER_USER" --password-stdin
+            docker images
+            docker push $DOCKER_USER/react-flask-mongo-pipeline-backend:latest
+            docker push $DOCKER_USER/react-flask-mongo-pipeline-frontend:latest
+            '''
         }
+    }
+}
+
     }
 
     post {
