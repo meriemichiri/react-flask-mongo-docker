@@ -25,7 +25,26 @@ pipeline {
         '''
     }
 }
+       stage('Push Images to Docker Hub') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-creds',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_TOKEN'
+                )]) {
+                    sh '''
+                    echo "$DOCKER_TOKEN" | docker login -u "$DOCKER_USER" --password-stdin
+                    docker compose push
+                    '''
+                }
+            }
+        }
 
+    }
+post {
+        always {
+            sh 'docker compose down || true'
+        }
     }
 }
 
