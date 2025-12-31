@@ -74,6 +74,9 @@ pipeline {
     }
 
     post {
+        success{
+            echo 'BUILS SUCCESSFUL'
+        }
         always {
             sh 'docker-compose down || true'
         }
